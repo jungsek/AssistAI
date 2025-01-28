@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AssistAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Welcome to AssistAI!</h1>
+
+    <!-- Hand Sign Classification Section -->
+    <div class="section">
+        <h2>Hand Sign Classification</h2>
+        <video id="webcam" class="camera-feed" width="400" height="300" autoplay></video>
+        <canvas id="canvas" hidden></canvas>
+        <div>
+            <button onclick="startWebcam()">Start Webcam</button>
+            <button onclick="captureImage()">Capture & Analyze</button>
+            <input type="file" id="imageUpload" accept="image/*">
+        </div>
+        <div id="signResult" class="results"></div>
+    </div>
+
+    <!-- Emotion/Intent Analysis Section -->
+    <div class="analysis section">
+        <div class="emotion container">
+            <h2>Emotion Analysis</h2>
+            <textarea id="emotionInput" rows="4" cols="50" 
+                      placeholder="Enter your text here..."></textarea>
+            <div>
+                <button onclick="analyzeEmotion()">Analyze Emotion</button>
+            </div>
+            <div id="emotionAnalysisResult" class="results"></div>
+        </div>
+        <div class="intent container">
+            <h2>Intent Analysis</h2>
+            <textarea id="intentInput" rows="4" cols="50" 
+                      placeholder="Enter your text here..."></textarea>
+            <div>
+                <button onclick="analyzeIntent()">Analyze Intent</button>
+            </div>
+            <div id="intentAnalysisResult" class="results"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
