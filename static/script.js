@@ -29,7 +29,7 @@ async function captureImage() {
 // Model Interaction Functions
 async function processImage(imageData) {
     // Send to PyTorch backend
-    const response = await fetch('/analyze-image', {
+    const response = await fetch('/analyze-cnn', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

@@ -5,3 +5,6 @@ pillow
 opencv-python
 flask
 Flask-Cors
+requests
+kagglehub
+scikit-learn

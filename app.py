@@ -1,9 +1,13 @@
 from flask import Flask, request, jsonify, send_from_directory, render_template  # type: ignore
 from flask_cors import CORS
 import torch
-from cvnl_intent_rnn import IntentClassifierRNN, EmbeddingPackable
+from models.cvnl_intent_rnn import IntentClassifierRNN, EmbeddingPackable
+from models.cvnl_asl_cnn import imageProcessor, cnnModel
 import json
 import os
+import cv2
+import numpy as np
+import base64
 
 app = Flask(__name__)
 CORS(app)
@@ -23,7 +27,7 @@ def serve_static(filename):
     return send_from_directory('static', filename)
 
 # Load intent model and data
-intent_checkpoint = torch.load('intent_model.pth')
+intent_checkpoint = torch.load('./models/intent_model.pth')
 intent_config = intent_checkpoint['config']
 intent_model = IntentClassifierRNN(
     vocab_size=intent_config['vocab_size'],
@@ -83,7 +87,29 @@ def analyze_intent():
         'input_text': text
     })
 
+#load CNN stuff
+imgProcessor = imageProcessor()
+cnn = cnnModel()
+cnn.loadWeights("./models/cnn_model_2.pth")
 
+@app.route('/analyze-cnn', methods=['POST'])
+def analyze_asl():
+    data = request.json
+    imgData = data['image']
+    if ',' in data['image']:
+        imgData = imgData.split(',')[1]
+    
+    #decode and convert to cv2
+    bytes = base64.b64decode(imgData)
+    npArr = np.frombuffer(bytes, np.uint8)
+    img = cv2.imdecode(npArr, cv2.IMREAD_COLOR)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    #input into model
+    img = imgProcessor.processImage(img)
+    probabilities = sorted(cnn.predictImage(img), key=lambda x: x[1], reverse=True)
+    result = probabilities[0][0]
+    return jsonify(result)
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(port=5000, debug=True)
