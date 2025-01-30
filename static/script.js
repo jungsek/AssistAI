@@ -4,7 +4,7 @@ let webcamStream;
 async function startWebcam() {
     try {
         const video = document.getElementById('webcam');
-        webcamStream = await navigator.mediaDevices.getUserMedia({ video: true });
+        webcamStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
         video.srcObject = webcamStream;
     } catch (err) {
         console.error('Error accessing webcam:', err);
@@ -105,5 +105,5 @@ document.getElementById('imageUpload').addEventListener('change', function(e) {
         document.getElementById('signResult').innerText = `Sign Detected: ${result}`;
     };
     
-    reader.readAsDataURL(file);
+    if (file) reader.readAsDataURL(file);
 });
