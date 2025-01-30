@@ -1,0 +1,7 @@
+mediapipe
+torch
+torchvision
+pillow
+opencv-python
+flask
+Flask-Cors
