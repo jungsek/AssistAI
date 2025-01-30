@@ -102,6 +102,8 @@ def analyze_asl():
     #decode and convert to cv2
     bytes = base64.b64decode(imgData)
     npArr = np.frombuffer(bytes, np.uint8)
+    if not npArr: return jsonify("No image provided")
+
     img = cv2.imdecode(npArr, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
