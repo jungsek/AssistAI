@@ -1,63 +1,168 @@
-body {
-    font-family: Arial, sans-serif;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f0f8ff;
+/* Base resets and font */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
+html, body {
+    height: 100%;
+    font-family: 'Inter', sans-serif;
+    background-color: #f0f8ff;
+    color: #333;
+}
+
+body {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 20px 40px;
+}
+
+/* Header styling */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+.logo-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo {
+    height: 50px;
+    width: 50px;
+}
+
+.main-header h1 {
+    font-size: 2em;
+    color: #007bff;
+    margin: 0;
+}
+
+.tagline {
+    font-size: 1em;
+    color: #555;
+}
+
+/* Intro Section */
+.intro {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.intro p {
+    font-size: 1.1rem;
+    line-height: 1.4;
+    color: #444;
+}
+
+/* Sections */
 .section {
-    background: white;
+    background: #ffffff;
     padding: 20px;
     margin: 20px 0;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
+/* Descriptive texts */
+.description {
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+    color: #666;
+}
+
+/* Camera feed */
 .camera-feed {
     border: 2px solid #007bff;
     border-radius: 5px;
     margin: 10px 0;
 }
 
+/* Button styling */
+.button-row {
+    margin: 10px 0;
+}
+
 button {
     background-color: #007bff;
     color: white;
-    padding: 10px 20px;
+    padding: 10px 16px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin: 5px;
+    transition: background-color 0.3s;
+    margin-right: 8px;
+    font-size: 0.9rem;
 }
 
 button:hover {
     background-color: #0056b3;
 }
 
+/* Custom label for file input */
+.upload-label {
+    background-color: #28a745;
+    padding: 9px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 8px;
+    color: #fff;
+    transition: background-color 0.3s;
+}
+
+.upload-label:hover {
+    background-color: #218838;
+}
+
+/* Hide actual file input, use label for styling */
+#imageUpload {
+    display: none;
+}
+
+/* Results styling */
 .results {
-    margin-top: 20px;
+    margin-top: 12px;
     padding: 15px;
     background-color: #e9ecef;
     border-radius: 5px;
 }
 
+/* Analysis Section */
 .analysis {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    gap: 20px;  /* Add this line to control space between containers */
+    gap: 20px; 
 }
 
 .container {
     flex: 1;
-    min-width: 45%;  /* Ensures containers don't get too narrow */
+    min-width: 45%;
 }
 
+h2 {
+    font-size: 1.3rem;
+    color: #007bff;
+    margin-bottom: 6px;
+}
+
+/* Intent Results */
 .intent-results {
     padding: 15px;
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-top: 8px;
 }
 
 .input-text {
@@ -78,6 +183,7 @@ button:hover {
     border-radius: 6px;
     background: #f8f9fa;
     transition: transform 0.2s;
+    margin-bottom: 6px;
 }
 
 .top-prediction {
@@ -86,7 +192,7 @@ button:hover {
 }
 
 .intent-name {
-    font-weight: bold;
+    font-weight: 600;
     color: #1976d2;
     margin-bottom: 8px;
 }
@@ -124,8 +230,16 @@ button:hover {
     margin-top: 8px;
 }
 
-h1 {
+/* Footer */
+.main-footer {
+    margin-top: 30px;
     text-align: center;
-    font-size: 2em;
-    color: #007bff;
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.main-footer .small-print {
+    margin-top: 5px;
+    font-size: 0.8rem;
+    color: #aaa;
 }
