@@ -39,7 +39,7 @@
         <video id="webcam" class="camera-feed" width="400" height="300" autoplay></video>
         <canvas id="canvas" hidden></canvas>
         <div class="button-row">
-            <button onclick="startWebcam()">Start Webcam</button>
+            <button onclick="toggleWebcam()" id="webcam-btn">Start Webcam</button>
             <button onclick="captureImage()">Capture &amp; Analyze</button>
             <label for="imageUpload" class="upload-label">Upload Image</label>
             <input type="file" id="imageUpload" accept="image/*" />
