@@ -1,13 +1,36 @@
 // Webcam Setup
 let webcamStream;
+var webcamOpen = false
 
 async function startWebcam() {
     try {
         const video = document.getElementById('webcam');
         webcamStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
         video.srcObject = webcamStream;
+        webcamOpen = true
+        document.getElementById("webcam-btn").innerText = "Close Webcam"
     } catch (err) {
         console.error('Error accessing webcam:', err);
+    }
+}
+
+async function stopWebcam(){
+    if (webcamStream) {
+        let tracks = webcamStream.getTracks();
+        tracks.forEach(track => track.stop());
+    }
+    
+    const video = document.getElementById('webcam');
+    video.srcObject = null;
+    webcamOpen = false;
+    document.getElementById("webcam-btn").innerText = "Open Webcam";
+}
+
+function toggleWebcam(){
+    if (webcamOpen){
+        stopWebcam()
+    } else{
+        startWebcam()
     }
 }
 

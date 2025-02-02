@@ -8,3 +8,4 @@ Flask-Cors
 requests
 kagglehub
 scikit-learn
+pandas

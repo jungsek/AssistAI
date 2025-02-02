@@ -43,6 +43,7 @@ class imageProcessor():
                 x_max, y_max = min(w, x_max + padding), min(h, y_max + padding)
 
                 cropped_img = img[y_min:y_max, x_min:x_max]
+                cropped_img = cv2.resize(cropped_img, (128, 128))
                 return cropped_img
 
         return img  # Return original image if no hand is detected
