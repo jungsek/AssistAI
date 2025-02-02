@@ -40,17 +40,59 @@ async function processImage(imageData) {
 }
 
 async function analyzeEmotion() {
-    const text = document.getElementById('userInput').value;
-    const response = await fetch('/analyze-emotion', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text: text })
-    });
-    const result = await response.json();
-    document.getElementById('analysisResult').innerText = 
-        `Emotion: ${result.emotion} (${Math.round(result.confidence * 100)}%)`;
+    const text = document.getElementById('emotionInput').value;
+    console.log(text);
+
+    try{ 
+        const response = await fetch('/analyze-emotion', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text: text })
+        });
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log("API Response:", result); // Debugging
+
+        if (!result.top_emotions || !Array.isArray(result.top_emotions) || result.top_emotions.length === 0) {
+            document.getElementById('emotionAnalysisResult').innerHTML = `<p>No emotions detected.</p>`;
+            return;
+        }
+        // Create formatted HTML for results
+        const resultHTML = `
+        <div class="intent-results">
+            <div class="input-text">
+                <strong>Input:</strong> "${result.input_text}"
+            </div>
+            <div class="predictions">
+                <strong>Top Predictions:</strong>
+                ${result.top_emotions.map((emotion, index) => `
+                    <div class="prediction ${index === 0 ? 'top-prediction' : ''}">
+                        <div class="intent-name">${emotion.emotion}</div>
+                        <div class="confidence-bar">
+                            <div class="bar" style="width: ${emotion.confidence * 100}%"></div>
+                            <span>${Math.round(emotion.confidence * 100)}%</span>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+    const resultContainer = document.getElementById('emotionAnalysisResult');
+    if (!resultContainer) {
+        console.error("Error: Element with ID 'emotionAnalysisResult' not found.");
+        return;
+    }
+    resultContainer.innerHTML = resultHTML;    
+
+}catch (error) {
+        console.error("Error analyzing emotion:", error);
+        document.getElementById('emotionAnalysisResult').innerHTML = `<p>Error processing request. Please try again.</p>`;
+    }
 }
 
 function formatIntentName(intent) {
@@ -94,6 +136,7 @@ async function analyzeIntent() {
     
     document.getElementById('intentAnalysisResult').innerHTML = resultHTML;
 }
+
 
 // File Upload Handler
 document.getElementById('imageUpload').addEventListener('change', function(e) {

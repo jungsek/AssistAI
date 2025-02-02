@@ -3,6 +3,8 @@ from flask_cors import CORS
 import torch
 import torch.nn as nn
 from models.cvnl_asl_cnn import imageProcessor, cnnModel
+from models.cvnl_emotions_rnn import LastTimeStep, EmbeddingPackable, better_tokenizer
+from torch.nn.utils.rnn import pad_sequence, pack_padded_sequence, pad_packed_sequence
 import json
 import os
 import cv2
@@ -128,7 +130,7 @@ def analyze_intent():
         top_probs, top_indices = torch.topk(probs[0], k=min(3, num_classes))
         
         # Format results
-        top_intents = [
+        top_intents = [ 
             {
                 'intent': intent_idx_to_label[idx.item()],
                 'confidence': prob.item(),
@@ -140,6 +142,93 @@ def analyze_intent():
     return jsonify({
         'top_intents': top_intents,
         'input_text': text
+    })
+
+emotion_checkpoint = torch.load('./models/rnn_emotions.pth', map_location=torch.device('cpu'), weights_only=False)
+vocab_size = len(emotion_checkpoint['vocab'])
+D = 126
+hidden_nodes = 64
+num_layers = 4
+bidirectional = True
+dropout = 0.5
+classes = len(emotion_checkpoint['new_labels_order'])
+
+emotion_model = nn.Sequential(
+  EmbeddingPackable(nn.Embedding(vocab_size, D)),
+  nn.GRU(
+      input_size=D,
+      hidden_size=hidden_nodes,
+      num_layers=num_layers,
+      batch_first=True,
+      dropout=dropout if num_layers > 1 else 0,
+      bidirectional=bidirectional,
+  ),
+  LastTimeStep(rnn_layers=num_layers, bidirectional=bidirectional),
+  nn.LayerNorm(hidden_nodes * (2 if bidirectional else 1)),
+  nn.Dropout(0.5),
+  nn.Linear(
+      in_features=hidden_nodes * (2 if bidirectional else 1),
+      out_features=classes),
+)
+
+# Load the trained weights
+emotion_model.load_state_dict(emotion_checkpoint['model_state_dict'])
+emotion_model.eval()
+
+# Load vocabularies and mappings
+emotion_vocab = emotion_checkpoint['vocab']
+emotion_idx_to_label = emotion_checkpoint['new_labels_order']
+
+@app.route('/analyze-emotion', methods=['POST'])
+def analyze_emotion():
+    data = request.json
+    text = data.get('text', '')
+    
+    # Preprocess text
+    tokens = better_tokenizer(text)
+    token_ids = [emotion_vocab.get(tok, 1) for tok in tokens]  # 1 = <unk>
+    
+    # Convert to tensor and pack sequence
+    input_tensor = torch.tensor(token_ids, dtype=torch.long).unsqueeze(1)  # (seq_len, 1)
+    lengths = torch.tensor([len(token_ids)])
+
+    # Create packed sequence matching model's expected format
+    packed = pack_padded_sequence(
+        input_tensor,
+        lengths,
+        batch_first=False,  # Must match model's GRU configuration!
+        enforce_sorted=False
+    )
+
+    # Get prediction
+    with torch.no_grad():
+        outputs = emotion_model(packed)
+        probs = torch.sigmoid(outputs).cpu()
+        
+    # Extract confidence scores
+    threshold = 0.3  # Define a confidence threshold
+    confidences = {
+        emotion_checkpoint['new_labels_order'][i]: float(probs[0][i])
+        for i in range(len(emotion_checkpoint['new_labels_order']))
+        if probs[0][i] > threshold
+    }
+
+    # If no emotion meets threshold, return most likely one
+    if not confidences:
+        most_likely_label = emotion_checkpoint['new_labels_order'][torch.argmax(probs).item()]
+        confidences = {most_likely_label: 1.0}  # Assign 100% confidence to most likely label
+    
+    formatted_emotions = [
+        {
+            "emotion": emotion,
+            "confidence": round(confidence, 3)  # Keep confidence to 3 decimal places
+        }
+        for emotion, confidence in confidences.items()
+    ]
+
+    return jsonify({
+        "top_emotions": formatted_emotions,
+        "input_text": text
     })
 
 #load CNN stuff
