@@ -6,7 +6,7 @@ Built for CVNL Assignment 2025
 - Python [3.10](https://www.python.org/downloads/release/python-310/) or [later versions](https://www.python.org/downloads/)
 
 ## Installation
-download this repo 
+download this repo<br> 
 cd into the repo's directory and install python depdencies:
 ```bash
 python -m pip install -r requirements.txt
