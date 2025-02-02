@@ -7,7 +7,7 @@ Built for CVNL Assignment 2025
 
 ## Installation
 
-Unstall python depedencies:
+Install python depedencies:
 ```bash
 python -m pip install -r requirements.txt
 ```
