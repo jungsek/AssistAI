@@ -3,7 +3,7 @@ AssistAI is an assistive application aiming to support individuals with emotiona
 Built for CVNL Assignment 2025
 
 ## Requirements
-- Python [3.10.6](https://www.python.org/downloads/release/python-3106/) or [later versions](https://www.python.org/downloads/)
+- Python [3.10](https://www.python.org/downloads/release/python-310/) or [later versions](https://www.python.org/downloads/)
 
 ## Installation
 download this repo 
