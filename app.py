@@ -164,7 +164,6 @@ emotion_model = nn.Sequential(
       bidirectional=bidirectional,
   ),
   LastTimeStep(rnn_layers=num_layers, bidirectional=bidirectional),
-  nn.LayerNorm(hidden_nodes * (2 if bidirectional else 1)),
   nn.Dropout(0.5),
   nn.Linear(
       in_features=hidden_nodes * (2 if bidirectional else 1),
