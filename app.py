@@ -234,7 +234,7 @@ def analyze_emotion():
 #load CNN stuff
 imgProcessor = imageProcessor()
 cnn = cnnModel()
-cnn.loadWeights("./models/cnn_model_2.pth")
+cnn.loadWeights("./models/cnn_model_3.pth")
 
 @app.route('/analyze-cnn', methods=['POST'])
 def analyze_asl():
@@ -246,14 +246,14 @@ def analyze_asl():
     #decode and convert to cv2
     bytes = base64.b64decode(imgData)
     npArr = np.frombuffer(bytes, np.uint8)
-    if not npArr: return jsonify("No image provided")
+    if not npArr.size: return jsonify("No image provided")
 
     img = cv2.imdecode(npArr, cv2.IMREAD_COLOR)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     #input into model
     img = imgProcessor.processImage(img)
     probabilities = sorted(cnn.predictImage(img), key=lambda x: x[1], reverse=True)
+    print(probabilities)
     result = probabilities[0][0]
     return jsonify(result)
 
