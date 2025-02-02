@@ -6,14 +6,14 @@ Built for CVNL Assignment 2025
 - Python [3.10](https://www.python.org/downloads/release/python-310/) or [later versions](https://www.python.org/downloads/)
 
 ## Installation
-download this repo<br> 
-cd into the repo's directory and install python depdencies:
+
+Unstall python depedencies:
 ```bash
 python -m pip install -r requirements.txt
 ```
 
 ## Usage
-**in the repository folder**:
+cd into the project folder:
 ```bash
 python app.py
 ```
